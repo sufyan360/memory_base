@@ -16,8 +16,8 @@ export default function Home() {
           <Typography variant = "h6" style={{flexGrow: 1}}>Memory Base</Typography>
 
           <SignedOut>
-            <Button color="inherit">Login</Button>
-            <Button color="inherit">Sign Up</Button>
+            <Button color="inherit" href="/sign-in">Login</Button>
+            <Button color="inherit" href="/sign-upS">Sign Up</Button>
           </SignedOut>
 
           <SignedIn>
