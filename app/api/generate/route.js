@@ -17,6 +17,7 @@ Ensure the answers are correct and relevant to the question. \
 Aim for a balance between difficulty and coverage of the topic. \
 Provide Output: \
 Return the generated flashcards in a structured format, including questions and answers. \
+Only generate 20 flashcards. \
 Example: \
     Topic: Photosynthesis \
         Flashcard 1: \
@@ -43,17 +44,18 @@ export async function POST(req){
       });
     const data = await req.text()
 
-    const completion = await openai.chat.completion.create({
+    const completion = await openai.chat.completions.create({
         messages: [
             {role: 'system', content: systemPrompt},
             {role: 'user', content: data},
         ],
-        model: "gpt-4o",
-        response_format:{type: 'json_object'}
+        model: "gpt-3.5-turbo"
     })
 
+    console.log(completion)
+
     const flashcards = JSON.parse(completion.choices[0].message.content)
-    return NextResponse.json(flashcards.flashcard)
+    return NextResponse.json(flashcards.flashcards)
 }
 
 

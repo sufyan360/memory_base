@@ -1,30 +1,57 @@
-import { getStripe } from "@/utils/get-stripe";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { AppBar, Box, Button, Container, Grid, Toolbar, Typography } from "@mui/material";
+"use client"
+import {useUser} from '@clerk/nextjs'
+import getStripe from "@/utils/get-stripe";
+import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import Head from "next/head";
+import {useRouter} from 'next/navigation'
+import Navbar from './navbar'
 
 export default function Home() {
+  const {isLoaded, isSignedIn, user} = useUser()
+  const router = useRouter()
+
+  const handleGetStarted = () => {
+    if (isSignedIn) {
+      router.push('/generate')
+    } else {
+      router.push('/sign-in')
+    }
+}
+
+  const handleSubmit = async () => {
+    const checkoutSession = await fetch('api/checkout_session', {
+    method: "POST",
+    headers:{
+      origin: "http//localhost:3000"
+    } 
+    })
+
+    const checkoutSessionJson = await checkoutSession.json()
+
+    if (checkoutSession.status === 500) {
+      console.error(checkoutSession.statusText)
+      return
+    }
+
+    const stripe = await getStripe()
+      const {error} = await stripe.redirectToCheckout({
+        sessionId: checkoutSessionJson.id
+      })
+
+    if (error) {
+      console.warn(error.message)
+    }
+
+    router.push('/result')
+  }
+
   return (
     <Container maxWidth = "100vw">
       <Head>
         <title>Memory Base</title>
         <meta name = "description" content = "Enter topic to create Flashcards" />
       </Head>
-
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant = "h6" style={{flexGrow: 1}}>Memory Base</Typography>
-
-          <SignedOut>
-            <Button color="inherit" href="/sign-in">Login</Button>
-            <Button color="inherit" href="/sign-upS">Sign Up</Button>
-          </SignedOut>
-
-          <SignedIn>
-            <UserButton/>
-          </SignedIn>
-        </Toolbar>
-      </AppBar>
+      <Navbar/>
       <Box
         sx={{
           textAlign:'center',
@@ -35,7 +62,7 @@ export default function Home() {
           {''}
           The best way to make Flashcards from SCRATCH
         </Typography>
-        <Button variant="contained" color='primary' sx={{mt: 2}}>Get Started</Button>
+        <Button variant="contained" color='primary' sx={{mt: 2}} onClick={handleGetStarted}>Get Started</Button>
       </Box>
       <Box sx={{my: 6}}>
         <Typography variant="h4" components="h2" gutterBottom>Features</Typography>
@@ -88,7 +115,13 @@ export default function Home() {
                   {' '}
                   Unlimited flashcards and storage with priority support.
                 </Typography>
-                <Button variant="contained" color="primary">Choose Pro</Button>     
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={handleSubmit}
+                  >
+                    Choose Pro
+                </Button>     
               </Box>
             </Grid>
         </Grid>
