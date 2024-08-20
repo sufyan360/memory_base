@@ -9,13 +9,17 @@ export default function Navbar() {
     const handleClick = () => {
           router.push('/')
     }
+
+    const handleSavedCards = () => {
+        router.push('/flashcards')
+    }
     return(
         <AppBar position="static" width='100vw'>
             <Toolbar 
                 sx={{
                     display: 'flex',
-                    justifyContent: 'space-between', // Space between items
-                    alignItems: 'center', // Center items vertically
+                    justifyContent: 'space-between', 
+                    alignItems: 'center',
                 }}>
             <Typography onClick={handleClick} variant = "h6" style={{display: 'flex', cursor: 'pointer'}}>Memory Base</Typography>
             <div>
@@ -25,6 +29,7 @@ export default function Navbar() {
                 </SignedOut>
 
                 <SignedIn>
+                    <Button variant="contained"  onClick={handleSavedCards}>View Saved Cards</Button>
                     <UserButton/>
                 </SignedIn>
             </div>

@@ -1,13 +1,13 @@
 "use client"
-import {useUser} from '@clerk/nextjs'
+import { useUser } from '@clerk/nextjs'
 import getStripe from "@/utils/get-stripe";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import Head from "next/head";
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import Navbar from './navbar'
 
 export default function Home() {
-  const {isLoaded, isSignedIn, user} = useUser()
+  const { isLoaded, isSignedIn, user } = useUser()
   const router = useRouter()
 
   const handleGetStarted = () => {
@@ -16,14 +16,22 @@ export default function Home() {
     } else {
       router.push('/sign-in')
     }
-}
+  }
+
+  const handleChooseBasic = () => {
+    router.push('/generate')
+  }
 
   const handleSubmit = async () => {
     const checkoutSession = await fetch('api/checkout_session', {
-    method: "POST",
-    headers:{
-      origin: "http//localhost:3000"
-    } 
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        successUrl: `${window.location.origin}/result`,
+        cancelUrl: `${window.location.origin}`,
+      }),
     })
 
     const checkoutSessionJson = await checkoutSession.json()
@@ -34,46 +42,43 @@ export default function Home() {
     }
 
     const stripe = await getStripe()
-      const {error} = await stripe.redirectToCheckout({
-        sessionId: checkoutSessionJson.id
-      })
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: checkoutSessionJson.id
+    })
 
     if (error) {
       console.warn(error.message)
     }
-
-    router.push('/result')
   }
 
   return (
-    <Container maxWidth = "100vw">
+    <Container maxWidth="100vw">
       <Head>
         <title>Memory Base</title>
-        <meta name = "description" content = "Enter topic to create Flashcards" />
+        <meta name="description" content="Enter topic to create Flashcards" />
       </Head>
-      <Navbar/>
+      <Navbar />
       <Box
         sx={{
-          textAlign:'center',
+          textAlign: 'center',
           my: 4,
         }}>
         <Typography variant="h2" gutterBottom>Welcome to Memory Base</Typography>
         <Typography variant="h5" gutterBottom>
-          {''}
           The best way to make Flashcards from SCRATCH
         </Typography>
-        <Button variant="contained" color='primary' sx={{mt: 2}} onClick={handleGetStarted}>Get Started</Button>
+        <Button variant="contained" color='primary' sx={{ mt: 2 }} onClick={handleGetStarted}>Get Started</Button>
       </Box>
-      <Box sx={{my: 6}}>
-        <Typography variant="h4" components="h2" gutterBottom>Features</Typography>
+      <Box sx={{ my: 6 }}>
+        <Typography variant="h4" component="h2" gutterBottom>Features</Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" gutterBottom>Easy to use</Typography>
-            <Typography>Simply enter your text and let us do the rest. Flashcards have never been easier</Typography>
+            <Typography>Simply enter your text and let us do the rest. Flashcards have never been easier.</Typography>
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" gutterBottom>Smart Flashcards</Typography>
-            <Typography>Our AI breaks down complex concepts into smaller chunks. Perfect for studying</Typography>
+            <Typography>Our AI breaks down complex concepts into smaller chunks. Perfect for studying.</Typography>
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="h6" gutterBottom>Accessible Anywhere</Typography>
@@ -81,49 +86,47 @@ export default function Home() {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{my: 6, textAlign: 'center'}}>
-        <Typography variant="h4" components="h2" gutterBottom>Pricing</Typography>
+      <Box sx={{ my: 6, textAlign: 'center' }}>
+        <Typography variant="h4" component="h2" gutterBottom>Pricing</Typography>
         <Grid container spacing={4}>
           <Grid item xs={12} md={6}>
             <Box
               sx={{
-                p:3,
+                p: 3,
                 border: '1px solid',
                 borderColor: 'grey.300',
                 borderRadius: 2,
               }}>
               <Typography variant="h5" gutterBottom>Basic</Typography>
-              <Typography variant="h6" gutterBottom>$5 / month</Typography>
+              <Typography variant="h6" gutterBottom>FREE</Typography>
               <Typography>
-                {' '}
                 Access to basic flashcard features and limited storage.
               </Typography>
-              <Button variant="contained" color="primary">Choose Basic</Button>     
+              <Button variant="contained" color="primary" onClick={handleChooseBasic}>Choose Basic</Button>     
             </Box>
           </Grid>
           <Grid item xs={12} md={6}>
             <Box
-                sx={{
-                  p:3,
-                  border: '1px solid',
-                  borderColor: 'grey.300',
-                  borderRadius: 2,
-                }}>
-                <Typography variant="h5" gutterBottom>Pro</Typography>
-                <Typography variant="h6" gutterBottom>$10 / month</Typography>
-                <Typography>
-                  {' '}
-                  Unlimited flashcards and storage with priority support.
-                </Typography>
-                <Button 
-                  variant="contained" 
-                  color="primary" 
-                  onClick={handleSubmit}
-                  >
-                    Choose Pro
-                </Button>     
-              </Box>
-            </Grid>
+              sx={{
+                p: 3,
+                border: '1px solid',
+                borderColor: 'grey.300',
+                borderRadius: 2,
+              }}>
+              <Typography variant="h5" gutterBottom>Pro</Typography>
+              <Typography variant="h6" gutterBottom>$10 / month</Typography>
+              <Typography>
+                Unlimited flashcards and storage with priority support.
+              </Typography>
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleSubmit}
+              >
+                Choose Pro
+              </Button>     
+            </Box>
+          </Grid>
         </Grid>
       </Box>
     </Container>

@@ -53,6 +53,10 @@ export default function Generate() {
         setOpen(false)
     }
 
+    const handleSavedCards = () => {
+        router.push('/flashcards')
+    }
+
     const saveFlashcards = async () => {
         if (!name) {
             alert('Please enter a name')
@@ -101,10 +105,10 @@ export default function Generate() {
                         value={text}
                         onChange={(e) =>
                             setText(e.target.value)}
-                        label="Enter Text"
+                        label="Enter Topic"
                         fullWidth
                         multiline
-                        rows={4}
+                        rows={1}
                         variant='outlined'
                         sx={{ md: 2 }}
                     />
@@ -119,9 +123,13 @@ export default function Generate() {
                 </Paper>
             </Box>
             {flashcards.length > 0 && (
-                <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* Center Flashcards Preview */}
-                    <Typography variant='h3' align='center'>Flashcards Preview</Typography> {/* Center the text */}
-                    <Grid container spacing={3} justifyContent="center"> {/* Center the Grid */}
+                <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> 
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                        <Typography variant='h3' align='center'>Flashcards Generated</Typography>
+                        <Button variant='contained' color='secondary' onClick={handleOpen}>Save</Button>
+                        <Button variant="contained" color="primary" onClick={handleSavedCards}>View Saved Cards</Button>
+                    </Box>      
+                    <Grid container spacing={3} justifyContent="center">
                         {flashcards.map((flashcard, index) => (
                             <Grid item xs={12} md={4} key={index}>
                                 <Card>
@@ -148,22 +156,25 @@ export default function Generate() {
                                                     alignItems: 'center',
                                                     padding: 2,
                                                     boxSizing: 'border-box',
-                                                    overflow: 'auto', // Scrollable box
+                                                    overflow: 'auto',
                                                 },
                                                 '& > div > div:nth-of-type(2)': {
                                                     transform: 'rotateY(180deg)',
-                                                    paddingTop: '25px', // Add padding to the top
-                                                    
+                                                    paddingTop: '15px',
+                                                    paddingBottom: '10px',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'flex-start',
                                                 }
                                             }}>
                                                 <div>
                                                     <div>
-                                                        <Typography variant='body1' component='div' align="center"> {/* Decreased text size */}
+                                                        <Typography variant='body1' component='div' align="center"> 
                                                             {flashcard.front}
                                                         </Typography>
                                                     </div>
                                                     <div>
-                                                        <Typography variant='body1' component='div' align="center"> {/* Decreased text size */}
+                                                        <Typography variant='body1' component='div' align="center"> 
                                                             {flashcard.back}
                                                         </Typography>
                                                     </div>
@@ -195,6 +206,7 @@ export default function Generate() {
                         type='text'
                         fullWidth
                         value={name}
+                        autoComplete='no'
                         onChange={(e) => setName(e.target.value)}
                         variant='outlined'
                     >
