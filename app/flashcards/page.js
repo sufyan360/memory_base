@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc, collection, writeBatch, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase'
 import { useRouter } from 'next/navigation'
-import { Container, Grid, Card, CardActionArea, CardContent, Button, Typography, Box } from '@mui/material'
+import { Container, Grid, Card, CardActionArea, CardContent, Button, IconButton, Typography, Box } from '@mui/material'
 import Navbar from '../navbar'
 
 export default function Flashcards() {
@@ -79,23 +79,24 @@ export default function Flashcards() {
                 <Grid container spacing={3} justifyContent="center">
                     {flashcards.map((flashcard, index) => (
                         <Grid item xs={12} sm={6} md={4} key={index}>
-                            <Card>
-                                <CardActionArea onClick={() => handleCardClick(flashcard.name)}>
+                            <Card sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                <CardActionArea sx={{flexGrow: 1}} onClick={() => handleCardClick(flashcard.name)}>
                                     <CardContent>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <Typography variant='h6'>{flashcard.name}</Typography>
-                                            <Button
-                                                variant="outlined"
-                                                color="error"
-                                                onClick={(e) => {
-                                                    e.stopPropagation(); // Prevent triggering the card click
-                                                    handleDelete(flashcard.name)
-                                                }}>
-                                                Delete
-                                            </Button>
                                         </Box>
                                     </CardContent>
                                 </CardActionArea>
+                                <Button
+                                    variant="outlined"
+                                    color="error"
+                                    sx={{mr: 2}}
+                                    onClick={(e) => {
+                                        e.stopPropagation(); // Prevent triggering the card click
+                                        handleDelete(flashcard.name)
+                                    }}>
+                                    Delete
+                                </Button>
                             </Card>
                         </Grid>
                     ))}
