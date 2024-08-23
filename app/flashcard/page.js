@@ -3,7 +3,7 @@ import {useUser} from "@clerk/nextjs"
 import {useEffect, useState} from 'react'
 import {collection, doc, getDocs} from 'firebase/firestore'
 import {db} from "../../firebase"
-import { Container, Box, Typography, Grid, Card, CardActionArea, CardContent, Button } from '@mui/material'
+import { Container, Box, Typography, Grid, Card, CardActionArea, CardContent } from '@mui/material'
 import { useSearchParams } from "next/navigation"
 import Navbar from '../navbar'
 import { useRouter } from "next/navigation"
@@ -18,11 +18,15 @@ export default function Flashcard() {
         if (!isSignedIn){
             router.push('/');
         }
-    }, [isSignedIn]);
+    }, [isSignedIn, router]);
 
     const searchParams = useSearchParams()
     const search = searchParams.get('id')
 
+    function capitalizeName(name) {
+        if (!name) return '';
+        return name.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     useEffect(() => {
         async function getFlashcard(){
@@ -62,7 +66,6 @@ export default function Flashcard() {
                 <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                         <Typography 
-                            align='center'
                             sx={{
                                 background: 'linear-gradient(to bottom, #ADD8E6, #601EF9)', 
                                 WebkitBackgroundClip: 'text',
@@ -71,7 +74,7 @@ export default function Flashcard() {
                                 margin: '3vh auto'}}
                             variant='h3' 
                             align='center'>
-                            {search}
+                            {capitalizeName(search)}
                         </Typography>
                     </Box>                    
                     <Grid container spacing={3} justifyContent="center">

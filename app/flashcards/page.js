@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc, collection, writeBatch, getDocs } from 'firebase/firestore'
 import { db } from '../../firebase'
 import { useRouter } from 'next/navigation'
-import { Container, Grid, Card, CardActionArea, CardContent, Button, IconButton, Typography, Box } from '@mui/material'
+import { Container, Grid, Card, CardActionArea, CardContent, Button, Typography, Box } from '@mui/material'
 import Navbar from '../navbar'
 
 export default function Flashcards() {
@@ -16,7 +16,7 @@ export default function Flashcards() {
         if (!isSignedIn){
             router.push('/');
         }
-    }, [isSignedIn]);
+    }, [isSignedIn, router]);
 
     useEffect(() => {
         async function getFlashcards() {
@@ -27,13 +27,17 @@ export default function Flashcards() {
             if (docSnapshots.exists()) {
                 const collections = docSnapshots.data().flashcards || []
                 setFlashcards(collections)
-            }
-            else {
+            } else {
                 await setDoc(docRef, { flashcards: [] })
             }
         }
         getFlashcards()
     }, [user])
+
+    function capitalizeName(name) {
+        if (!name) return '';
+        return name.replace(/\b\w/g, (char) => char.toUpperCase());
+    }
 
     if (!isLoaded || !isSignedIn) {
         return null
@@ -113,7 +117,7 @@ export default function Flashcards() {
                                 <CardActionArea sx={{flexGrow: 1}} onClick={() => handleCardClick(flashcard.name)}>
                                     <CardContent>
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <Typography variant='h6'>{flashcard.name}</Typography>
+                                            <Typography variant='h6'>{capitalizeName(flashcard.name)}</Typography>
                                         </Box>
                                     </CardContent>
                                 </CardActionArea>
