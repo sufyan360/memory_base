@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { Container, Box, Typography, Grid, Card, CardActionArea, CardContent, Button, Paper, TextField, Dialog, DialogContent, DialogTitle, DialogContentText, DialogActions, CircularProgress } from '@mui/material'
 import { useState } from 'react'
-import React from 'react'
+import {React, useEffect} from 'react'
 import { db } from '../../firebase'
 import Navbar from '../navbar'
 
@@ -17,6 +17,12 @@ export default function Generate() {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false);
     const router = useRouter()
+
+    useEffect(() => {
+        if (!isSignedIn){
+            router.push('/');
+        }
+    }, [isSignedIn]);
 
     const handleSubmit = async () => {
         setLoading(true)
@@ -51,10 +57,6 @@ export default function Generate() {
     }
     const handleClose = () => {
         setOpen(false)
-    }
-
-    const handleSavedCards = () => {
-        router.push('/flashcards')
     }
 
     const saveFlashcards = async () => {
@@ -94,13 +96,31 @@ export default function Generate() {
     }
 
     return (
-        <Container maxWidth='md'>
+        <Container maxWidth='md' sx={{paddingTop: '10vh'}}>
             <Navbar />
             <Box
                 sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             >
-                <Typography variant='h3'>Generate Flashcards</Typography>
-                <Paper sx={{ p: 4, width: '100%' }}>
+                <Typography 
+                    variant='h3' 
+                    sx={{ 
+                        mr: 2,
+                        fontWeight: 'bold', 
+                        background: 'linear-gradient(to bottom, #000080, #601EF9)', 
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                        m: '4vh 4vw'
+                        }}
+                >
+                    Generate Flashcards
+                </Typography>
+                <Paper sx={{ 
+                    p: 4, width: '100%', 
+                    display: 'flex',
+                    flexDirection:'column',
+                    justifyContent: 'center', 
+                    alignItems: 'center'}}>
                     <TextField
                         value={text}
                         onChange={(e) =>
@@ -114,7 +134,17 @@ export default function Generate() {
                     />
                     <Button
                         variant='contained'
-                        color='primary'
+                        sx={{color: 'white',
+                            textAlign: 'center',
+                            mt: 2,
+                            width: '20vw',
+                            borderRadius: 15,
+                            backgroundColor: '#000080',
+                            '&:hover':{
+                                color: 'white',
+                                backgroundColor: '#601EF9'
+                            }
+                        }}
                         onClick={handleSubmit}
                         fullWidth
                         disabled={loading}>
@@ -125,9 +155,29 @@ export default function Generate() {
             {flashcards.length > 0 && (
                 <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> 
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <Typography variant='h3' align='center'>Flashcards Generated</Typography>
-                        <Button variant='contained' color='secondary' onClick={handleOpen}>Save</Button>
-                        <Button variant="contained" color="primary" onClick={handleSavedCards}>View Saved Cards</Button>
+                        <Typography 
+                            variant='h3' 
+                            align='center'
+                            sx={{
+                                background: 'linear-gradient(to bottom, #ADD8E6, #601EF9)', 
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                                margin: '3vh auto'}}>
+                            Flashcards Generated
+                        </Typography>
+                        <Button 
+                            variant='contained' 
+                            sx={{borderRadius: 15,
+                                backgroundColor: '#601EF9',
+                                '&:hover':{
+                                    color: '#601EF9',
+                                    backgroundColor: 'white'
+                                }
+                            }}
+                            onClick={handleOpen}>
+                            Save
+                        </Button>
                     </Box>      
                     <Grid container spacing={3} justifyContent="center">
                         {flashcards.map((flashcard, index) => (
@@ -186,17 +236,12 @@ export default function Generate() {
                             </Grid>
                         ))}
                     </Grid>
-                    <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-                        <Button variant='contained' color='secondary' onClick={handleOpen}>
-                            Save
-                        </Button>
-                    </Box>
                 </Box>
             )}
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Save Flashcards</DialogTitle>
+            <Dialog open={open} onClose={handleClose} sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent:"center", textAlign:'center'}}>
+                <DialogTitle sx={{color: '#000080'}} >Save Flashcards</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    <DialogContentText sx={{color: '#000080'}}>
                         Please enter a name for your flashcards collection
                     </DialogContentText>
                     <TextField

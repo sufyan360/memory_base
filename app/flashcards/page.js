@@ -13,6 +13,12 @@ export default function Flashcards() {
     const router = useRouter()
 
     useEffect(() => {
+        if (!isSignedIn){
+            router.push('/');
+        }
+    }, [isSignedIn]);
+
+    useEffect(() => {
         async function getFlashcards() {
             if (!user) return
             const docRef = doc(collection(db, 'users'), user.id)
@@ -69,12 +75,36 @@ export default function Flashcards() {
     }
 
     return (
-        <Container maxWidth='100vw'>
+        <Container maxWidth='100vw' sx={{paddingTop: '10vh', background: 'linear-gradient(to bottom, white, #DFC5FE)', height: '100vh'}}>
             <Navbar />
             <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', mb: 4 }}>
-                    <Typography variant='h3' align='center' sx={{ mr: 2 }}>Saved Cards</Typography>
-                    <Button variant='contained' color='primary' onClick={sendHome}>Generate New</Button>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', mb: 4}}>
+                    <Typography 
+                        variant='h3'  
+                        align='center' 
+                        sx={{ 
+                            mr: 2,
+                            fontWeight: 'bold', 
+                            background: 'linear-gradient(to bottom, #AB67EA, #601EF9)', 
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                            m: '4vh 4vw'
+                         }}>
+                        Saved Cards
+                    </Typography>
+                    <Button 
+                        variant='contained' 
+                        onClick={sendHome}
+                        sx={{
+                            borderRadius: 15,
+                            backgroundColor: '#000080',
+                            '&:hover':{
+                                backgroundColor: '#601EF9'
+                            }
+                        }}>
+                        Generate New
+                    </Button>
                 </Box>
                 <Grid container spacing={3} justifyContent="center">
                     {flashcards.map((flashcard, index) => (
@@ -89,8 +119,13 @@ export default function Flashcards() {
                                 </CardActionArea>
                                 <Button
                                     variant="outlined"
-                                    color="error"
-                                    sx={{mr: 2}}
+                                    sx={{
+                                        mr: 2, 
+                                        color: '#ADD8E6',
+                                        '&:hover':{
+                                            color: '#000080'
+                                        }
+                                        }}
                                     onClick={(e) => {
                                         e.stopPropagation(); // Prevent triggering the card click
                                         handleDelete(flashcard.name)

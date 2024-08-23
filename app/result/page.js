@@ -42,7 +42,7 @@ const ResultPage = () => {
 
     if (loading) {
         return (
-            <Container maxWidth='100vw' sx={{ textAlign: 'center', mt: 4 }}>
+            <Container maxWidth='100vw' sx={{ textAlign: 'center', mt: 4, paddingTop: '10vh'}}>
                 <CircularProgress />
                 <Typography variant='h6'>Loading...</Typography>
             </Container>

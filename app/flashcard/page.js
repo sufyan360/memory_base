@@ -12,11 +12,17 @@ export default function Flashcard() {
     const {isLoaded, isSignedIn, user} = useUser()
     const [flashcards, setFlashcards] = useState([])
     const [flipped, setFlipped] = useState([])
+    const router = useRouter()
+
+    useEffect(() => {
+        if (!isSignedIn){
+            router.push('/');
+        }
+    }, [isSignedIn]);
 
     const searchParams = useSearchParams()
     const search = searchParams.get('id')
 
-    const router = useRouter()
 
     useEffect(() => {
         async function getFlashcard(){
@@ -50,13 +56,23 @@ export default function Flashcard() {
     }
     
     return (
-        <Container maxWidth='md'>
+        <Container maxWidth='md' sx={{paddingTop: '10vh'}}>
             <Navbar />
             {flashcards.length > 0 && (
                 <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                        <Typography variant='h3' align='center'>Flashcards Generated</Typography>
-                        <Button variant="contained" color="primary" onClick={handleSavedCards}>View Saved Cards</Button>
+                        <Typography 
+                            align='center'
+                            sx={{
+                                background: 'linear-gradient(to bottom, #ADD8E6, #601EF9)', 
+                                WebkitBackgroundClip: 'text',
+                                WebkitTextFillColor: 'transparent',
+                                textShadow: '1px 1px 2px rgba(0, 0, 0, 0.2)',
+                                margin: '3vh auto'}}
+                            variant='h3' 
+                            align='center'>
+                            {search}
+                        </Typography>
                     </Box>                    
                     <Grid container spacing={3} justifyContent="center">
                         {flashcards.map((flashcard, index) => (
