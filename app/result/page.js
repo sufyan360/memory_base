@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CircularProgress, Container, Typography, Box } from '@mui/material'
+import NavBar from '../navbar'
 
 const ResultPage = () => {
     const router = useRouter()
@@ -42,9 +43,21 @@ const ResultPage = () => {
 
     if (loading) {
         return (
-            <Container maxWidth='100vw' sx={{ textAlign: 'center', mt: 4, paddingTop: '10vh'}}>
-                <CircularProgress />
-                <Typography variant='h6'>Loading...</Typography>
+            
+            <Container maxWidth='100vw' 
+            sx={{ 
+                background: 'linear-gradient(to bottom, white, #AB67EA, #601EF9)',
+                display: 'flex', 
+                justifyContent: 'center',
+                alignItems: 'center', 
+                textAlign: 'center', 
+                height: '100vh',
+                gap: 4,
+                paddingTop: '10vh',
+                width: '100%'}}>
+                <NavBar/>
+                <CircularProgress sx={{zIndex: 1300, color: 'white'}}/>
+                <Typography sx={{color: 'white'}}variant='h6'>Loading...</Typography>
             </Container>
         )
     }
@@ -55,26 +68,42 @@ const ResultPage = () => {
     }
 
     return (
-        <Container maxWidth='100vw' sx={{ textAlign: 'center', mt: 4 }}>
+        <Container maxWidth='100vw' minHeight='100vh' 
+        sx={{
+        background: 'linear-gradient(to bottom, white, #AB67EA, #601EF9)',
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center',
+        alignItems: 'center', 
+        textAlign: 'center',
+        height: '100vh',}}>
+            <NavBar/>
             {session.payment_status === "paid" ? (
-                <>
-                    <Typography variant='h4'>Thank you for your purchase!</Typography>
+                <Box>
+                    <Typography variant='h4' sx={{color: 'white'}}>Thank you for your purchase!</Typography>
                     <Box sx={{ mt: 2 }}>
-                        <Typography variant='h6'>Session ID: {session_id}</Typography>
-                        <Typography variant='body1'>
+                        <Typography sx={{color: 'white'}} variant='h6'>Session ID: {session_id}</Typography>
+                        <Typography sx={{color: 'white'}} variant='body1'>
                             We have received your payment. You will receive an email with the order details shortly.
                         </Typography>
                     </Box>
-                </>
+                </Box>
             ) : (
-                <>
+                <Container>
                     <Typography variant='h4' color="error">Payment Failed</Typography>
-                    <Box sx={{ mt: 2 }}>
-                        <Typography variant='body1'>
+                    <Box sx={{ 
+                        display: 'flex', 
+                        justifyContent: 'center',
+                        alignItems: 'center', 
+                        textAlign: 'center',
+                        }}>
+                        <Typography 
+                            sx={{color: 'white'}}
+                            variant='body1'>
                             Your payment was not successful. Please try again.
                         </Typography>
                     </Box>
-                </>
+                </Container>
             )}
         </Container>
     )
