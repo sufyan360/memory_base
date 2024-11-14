@@ -49,7 +49,7 @@ export async function POST(req){
             {role: 'system', content: systemPrompt},
             {role: 'user', content: data},
         ],
-        model: "gpt-3.5-turbo"
+        model: 'meta-llama/llama-3.1-70b-instruct:free'
     })
 
     console.log(completion)
